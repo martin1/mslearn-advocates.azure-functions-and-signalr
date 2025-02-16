@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Server
+name: Build and deploy Node.js project to Azure Function App - api-mk
 
 on:
   push:
@@ -12,7 +12,6 @@ on:
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '20.x' # set this to the node version to use (supports 8.x, 10.x, 12.x)
-  PACKAGE_PATH: 'start/server'
 
 jobs:
   build:
@@ -32,18 +31,14 @@ jobs:
       - name: 'Resolve Project Dependencies Using Npm'
         shell: bash
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}'
+          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
           npm install
           npm run build --if-present
           npm run test --if-present
           popd
 
       - name: Zip artifact for deployment
-        run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}'
-          zip -r release.zip .
-          popd
-          cp ./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/${{ env.PACKAGE_PATH }}/release.zip ./release.zip
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -70,9 +65,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_342999D2FFB848EB82C66529A4E8DFA8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_00A7CE882DA4424EABCF6CBA4C338CA4 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_62C5FA78B7F64501A899FB3031B011C8 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_78AA0D79D302465A838E4E0036CA29C5 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E0D09C35615942FDB877CAACE546DF0F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4B980B11212F44EFAB7A11DEDB93C55A }}
 
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
